@@ -1,0 +1,89 @@
+:root {
+  /* Cores primárias */
+  --color-primary: hsla(243, 100%, 70%, 1);
+  /* #6C63FF */
+  --color-primary-hover: hsla(243, 56%, 57%, 1);
+  /* #574fd1 */
+
+  /* Cores de fundo e texto - Light Mode */
+  --color-background: hsla(240, 20%, 98%, 1);
+  /* #f9f9fb */
+  --color-surface: hsla(0, 0%, 100%, 1);
+  /* #ffffff */
+  --color-text: hsla(240, 4%, 11%, 1);
+  /* #1c1c1e */
+  --color-subtle-text: hsla(0, 0%, 40%, 1);
+  /* #666666 */
+
+  /* Cores auxiliares */
+  --color-success: hsla(122, 39%, 49%, 1);
+  /* #4caf50 */
+  --color-warning: hsla(36, 100%, 50%, 1);
+  /* #ff9800 */
+  --color-danger: hsla(0, 90%, 58%, 1);
+  /* #f44336 */
+
+  /* Bordas e sombras */
+  --color-border: hsla(0, 0%, 88%, 1);
+  /* #e0e0e0 */
+  --color-shadow: hsla(0, 0%, 0%, 0.05);
+  /* rgba(0,0,0,0.05) */
+
+  /* Moeda secundária (R$) */
+  --color-secondary-currency: hsla(168, 76%, 43%, 1);
+  /* #1abc9c */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: hsla(243, 100%, 76%, 1);
+    /* #8c88ff */
+    --color-primary-hover: hsla(243, 100%, 84%, 1);
+    /* #b2afff */
+
+    --color-background: hsla(235, 19%, 15%, 1);
+    /* #1e1e2a */
+    --color-surface: hsla(235, 18%, 20%, 1);
+    /* #2a2a3b */
+    --color-text: hsla(0, 0%, 95%, 1);
+    /* #f1f1f1 */
+    --color-subtle-text: hsla(0, 0%, 67%, 1);
+    /* #aaa */
+
+    --color-success: hsla(122, 39%, 65%, 1);
+    /* #81c784 */
+    --color-warning: hsla(36, 100%, 65%, 1);
+    /* #ffb74d */
+    --color-danger: hsla(0, 69%, 69%, 1);
+    /* #e57373 */
+
+    --color-border: hsla(0, 0%, 27%, 1);
+    /* #444444 */
+    --color-shadow: hsla(0, 0%, 0%, 0.3);
+    /* rgba(0,0,0,0.3) */
+
+    --color-secondary-currency: hsla(168, 60%, 52%, 1);
+    /* #2eccb8 */
+  }
+}
+
+button,
+[type='button'],
+::-webkit-file-upload-button {
+  cursor: pointer;
+}
+
+:disabled {
+  cursor: not-allowed;
+}
+
+body {
+  font-family: "Inter";
+  color: var(--color-text);
+  font-size: 1rem;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-style: normal;
+}

@@ -1,0 +1,12 @@
+@import './modern-normalize.css';
+@import './base.css';
+
+body {
+  min-height: 100vh;
+  background: var(--color-background);
+  transition: color 0.5s, background-color 0.5s;
+}
+
+#app {
+  height: 100vh;
+}
