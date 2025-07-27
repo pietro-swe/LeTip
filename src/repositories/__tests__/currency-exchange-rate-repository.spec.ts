@@ -31,13 +31,8 @@ describe('Currency Exchange Rate Repository Test Suite', () => {
   let httpClient: IHttpClient
   let systemUnderTest: CurrencyExchangeRateRepository
 
-  beforeEach(() => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date(2025, 6, 27))
-  })
-
   afterEach(() => {
-    vi.useRealTimers()
+    vi.clearAllMocks()
   })
 
   it('should return a proper rate', async () => {

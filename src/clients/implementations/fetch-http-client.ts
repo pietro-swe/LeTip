@@ -22,9 +22,11 @@ export class FetchHttpClient implements IHttpClient {
       const queryParams = this.#buildSearchParams(query)
       const url = this.#buildURL(endpoint, queryParams)
 
+      const signal = AbortSignal.timeout(this.#timeoutMs)
+
       const response = await this.#fetchFn(url, {
         headers,
-        signal: AbortSignal.timeout(this.#timeoutMs),
+        signal,
       })
 
       if (!response.ok) {
