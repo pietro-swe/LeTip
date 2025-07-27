@@ -1,60 +1,48 @@
 import type { Currency } from '@/@types/enterprise/currency'
 import type { GetRateResponse } from '@/@types/http/exchange-rate-response'
 import type { IHttpClient } from '@/clients/http-client'
-import { FetchHttpClient } from '@/clients/implementations/fetch-http-client'
 
 type GetRateParams = {
-  currencies: Currency[]
+  currency: Currency
   baseCurrency?: Currency
-  from?: Date
+  date?: Date
 }
 
 export class CurrencyExchangeRateRepository {
-  readonly #baseURL: string
+  readonly #client: IHttpClient
   readonly #apiKey: string
 
-  readonly #client: IHttpClient
-
-  constructor() {
-    this.#baseURL = import.meta.env.VITE_API_BASE_URL
-    this.#apiKey = import.meta.env.VITE_API_KEY
-
-    this.#client = new FetchHttpClient(this.#baseURL)
+  constructor(client: IHttpClient, apiKey: string) {
+    this.#client = client
+    this.#apiKey = apiKey
   }
 
-  async getRate(params: GetRateParams) {
+  async getRate(params: GetRateParams): Promise<number | null> {
     try {
-      const { currencies, baseCurrency = 'EUR', from = new Date() } = params
+      const { currency, baseCurrency = 'EUR', date = new Date() } = params
 
-      const date = this.#parseDate(from)
-      const quoteCurrencies = this.#parseCurrenciesList(currencies)
-
+      const endpoint = this.#buildSingleRateEndpoint(baseCurrency, currency)
+      const fromDate = this.#parseDate(date)
       const headers = this.#buildHeaders()
 
       const response = await this.#client.get<GetRateResponse>({
-        endpoint: 'rates',
-        params: {
-          date,
-          base_currency: baseCurrency,
-          quote_currencies: quoteCurrencies,
-        },
+        endpoint,
         headers,
+        query: {
+          date: fromDate,
+        },
       })
 
-      if (response instanceof Error) {
-        return []
-      }
-
-      return response
+      return response.quote
     } catch (error) {
-      console.error(error)
+      console.log(error)
 
-      return []
+      return null
     }
   }
 
-  #parseCurrenciesList(currencies: Currency[]): string {
-    return currencies.join(',')
+  #buildSingleRateEndpoint(baseCurrency: string, quoteCurrency: string): string {
+    return `rates/${baseCurrency}/${quoteCurrency}`
   }
 
   #parseDate(date: Date): string {
@@ -65,7 +53,7 @@ export class CurrencyExchangeRateRepository {
 
   #buildHeaders(): Headers {
     return new Headers({
-      Authorizaiton: `ApiKey ${this.#apiKey}`,
+      Authorization: `ApiKey ${this.#apiKey}`,
       Accept: 'Application/json; Charset=utf-8',
     })
   }

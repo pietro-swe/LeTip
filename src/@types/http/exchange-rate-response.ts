@@ -7,4 +7,4 @@ export type Rate = {
   date: string
 }
 
-export type GetRateResponse = Rate[]
+export type GetRateResponse = Rate

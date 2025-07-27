@@ -1,6 +1,10 @@
 import { useTipCalculator } from '../tip-calculator'
 
 describe('Tip Calculator Test Suit', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('should correctly calculate the tip amount', () => {
     const tipCalculator = useTipCalculator()
 
