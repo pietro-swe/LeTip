@@ -1,3 +1,6 @@
+import { FetchHttpClient } from '@/clients/implementations/fetch-http-client'
+import { CurrencyExchangeRateRepository } from '@/repositories/currency-exchange-rate-repository'
+import { watchDebounced } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
 export type TipFormSchema = {
@@ -13,13 +16,20 @@ export type SummarySchema = {
   perPersonAmount: number
 }
 
-export function useTipCalculator() {
+export function useTipCalculator(debounceMs: number = 750) {
+  const client = new FetchHttpClient(import.meta.env.VITE_API_BASE_URL)
+  const repository = new CurrencyExchangeRateRepository(client, import.meta.env.VITE_API_KEY)
+
+  const isCalculatingBrlTotal = ref<boolean>(false)
+
   const formData = ref<TipFormSchema>({
     shouldUseUSD: false,
     amount: 0,
     tipPercentage: 0.1,
     numberOfPeopleToSplit: 2,
   })
+
+  const totalInBrl = ref<number>(0)
 
   const summary = computed<SummarySchema>(() => {
     const tipTotal = calculateTipAmount(formData.value.amount, formData.value.tipPercentage)
@@ -47,6 +57,30 @@ export function useTipCalculator() {
     return total / numberOfPersons
   }
 
+  watchDebounced(
+    summary,
+    async () => {
+      isCalculatingBrlTotal.value = true
+
+      const rate = await repository.getRate({
+        currency: 'BRL',
+        baseCurrency: formData.value.shouldUseUSD ? 'USD' : 'EUR',
+      })
+
+      if (!rate) {
+        isCalculatingBrlTotal.value = false
+        return
+      }
+
+      totalInBrl.value = rate
+
+      isCalculatingBrlTotal.value = false
+    },
+    {
+      debounce: debounceMs,
+    },
+  )
+
   function reset() {
     formData.value = {
       shouldUseUSD: false,
@@ -57,8 +91,10 @@ export function useTipCalculator() {
   }
 
   return {
+    isCalculatingBrlTotal,
     formData,
     summary,
+    totalInBrl,
     reset,
     calculateTipAmount,
     calculateTotal,
