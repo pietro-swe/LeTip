@@ -1,9 +1,9 @@
-import type { Currency } from "../enterprise/currency"
+import type { Currency } from '../enterprise/currency'
 
 export type Rate = {
-  base_currency: Currency,
-  quote_currency: Currency,
-  quote: number,
+  base_currency: Currency
+  quote_currency: Currency
+  quote: number
   date: string
 }
 

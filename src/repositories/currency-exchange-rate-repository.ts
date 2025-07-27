@@ -1,7 +1,7 @@
-import type { Currency } from "@/@types/enterprise/currency";
-import type { GetRateResponse } from "@/@types/http/exchange-rate-response";
-import type { IHttpClient } from "@/clients/http-client";
-import { FetchHttpClient } from "@/clients/implementations/fetch-http-client";
+import type { Currency } from '@/@types/enterprise/currency'
+import type { GetRateResponse } from '@/@types/http/exchange-rate-response'
+import type { IHttpClient } from '@/clients/http-client'
+import { FetchHttpClient } from '@/clients/implementations/fetch-http-client'
 
 type GetRateParams = {
   currencies: Currency[]
@@ -9,7 +9,6 @@ type GetRateParams = {
   from?: Date
 }
 
-// TODO: Cache layer? Retry?
 export class CurrencyExchangeRateRepository {
   readonly #baseURL: string
   readonly #apiKey: string
@@ -24,32 +23,34 @@ export class CurrencyExchangeRateRepository {
   }
 
   async getRate(params: GetRateParams) {
-    const {
-      currencies,
-      baseCurrency = 'EUR',
-      from = new Date()
-    } = params
+    try {
+      const { currencies, baseCurrency = 'EUR', from = new Date() } = params
 
-    const date = this.#parseDate(from)
-    const quoteCurrencies = this.#parseCurrenciesList(currencies)
+      const date = this.#parseDate(from)
+      const quoteCurrencies = this.#parseCurrenciesList(currencies)
 
-    const headers = this.#buildHeaders();
+      const headers = this.#buildHeaders()
 
-    const response = await this.#client.get<GetRateResponse>(
-      'rates',
-      {
-        date,
-        base_currency: baseCurrency,
-        quote_currencies: quoteCurrencies,
-      },
-      headers,
-    )
+      const response = await this.#client.get<GetRateResponse>({
+        endpoint: 'rates',
+        params: {
+          date,
+          base_currency: baseCurrency,
+          quote_currencies: quoteCurrencies,
+        },
+        headers,
+      })
 
-    if (response instanceof Error) {
+      if (response instanceof Error) {
+        return []
+      }
+
+      return response
+    } catch (error) {
+      console.error(error)
+
       return []
     }
-
-    return response;
   }
 
   #parseCurrenciesList(currencies: Currency[]): string {

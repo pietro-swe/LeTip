@@ -4,12 +4,7 @@ export class RequestError extends Error {
   status: number
   headers?: Headers
 
-  constructor(
-    endpoint: string,
-    params: Record<string, any>,
-    status: number,
-    headers?: Headers,
-  ) {
+  constructor(endpoint: string, params: Record<string, any>, status: number, headers?: Headers) {
     super()
 
     this.endpoint = endpoint
