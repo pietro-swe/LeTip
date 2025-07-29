@@ -8,9 +8,11 @@
       max: number
       step: number
       formatter: Intl.NumberFormat
+      percentage?: boolean
       id?: string
     }>(),
     {
+      percentage: false,
       id: crypto.randomUUID(),
     },
   )
@@ -18,6 +20,8 @@
   const modelValue = defineModel<number>({
     required: true,
   })
+
+  const isUsingPercentageFormatter = props.formatter.resolvedOptions().style === 'percent'
 
   const formattedValue = computed(() => {
     return props.formatter.format(modelValue.value)
@@ -33,7 +37,7 @@
     </div>
 
     <div class="range-input-container__input">
-      <span>{{ props.min }}</span>
+      <span>{{ isUsingPercentageFormatter ? props.min * 100 : props.min }}</span>
       <input
         v-model.number="modelValue"
         type="range"
@@ -42,7 +46,7 @@
         :max="props.max"
         :step="props.step"
       />
-      <span>{{ props.max }}</span>
+      <span>{{ isUsingPercentageFormatter ? props.max * 100 : props.max }}</span>
     </div>
   </div>
 </template>

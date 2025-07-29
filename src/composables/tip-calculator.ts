@@ -35,7 +35,7 @@ export function useTipCalculator(options?: UseTipCalculatorOptions) {
   const formData = ref<TipFormSchema>({
     shouldUseUSD: false,
     amount: 0,
-    tipPercentage: 10,
+    tipPercentage: 0.1,
     numberOfPeopleToSplit: 2,
   })
 
