@@ -136,15 +136,13 @@ describe('Tip Calculator Test Suit', () => {
     })
     repository = new CurrencyExchangeRateRepository(httpClient, import.meta.env.VITE_API_KEY)
 
-    const calculator = useTipCalculator({
+    const { formData, summary, totalInBrl, isCalculatingBrlTotal } = useTipCalculator({
       debounceMs: 100,
       client: httpClient,
       repository: repository,
     })
 
     const repositorySpy = vi.spyOn(repository, 'getRate')
-
-    const { formData, summary, totalInBrl, isCalculatingBrlTotal } = calculator
 
     formData.value.amount = 100
     formData.value.tipPercentage = 0.1
@@ -167,15 +165,13 @@ describe('Tip Calculator Test Suit', () => {
     })
     repository = new CurrencyExchangeRateRepository(httpClient, import.meta.env.VITE_API_KEY)
 
-    const calculator = useTipCalculator({
+    const { formData, totalInBrl } = useTipCalculator({
       debounceMs: 100,
       client: httpClient,
       repository: repository,
     })
 
     const repositorySpy = vi.spyOn(repository, 'getRate')
-
-    const { formData, totalInBrl } = calculator
 
     formData.value.amount = 200
 
