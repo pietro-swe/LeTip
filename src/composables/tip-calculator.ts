@@ -1,3 +1,4 @@
+import type { IHttpClient } from '@/clients/http-client'
 import { FetchHttpClient } from '@/clients/implementations/fetch-http-client'
 import { CurrencyExchangeRateRepository } from '@/repositories/currency-exchange-rate-repository'
 import { watchDebounced } from '@vueuse/core'
@@ -16,9 +17,18 @@ export type SummarySchema = {
   perPersonAmount: number
 }
 
-export function useTipCalculator(debounceMs: number = 750) {
-  const client = new FetchHttpClient(import.meta.env.VITE_API_BASE_URL)
-  const repository = new CurrencyExchangeRateRepository(client, import.meta.env.VITE_API_KEY)
+export type UseTipCalculatorOptions = {
+  debounceMs?: number
+  client?: IHttpClient
+  repository?: CurrencyExchangeRateRepository
+}
+
+export function useTipCalculator(options?: UseTipCalculatorOptions) {
+  const {
+    debounceMs = 750,
+    client = new FetchHttpClient(import.meta.env.VITE_API_BASE_URL),
+    repository = new CurrencyExchangeRateRepository(client, import.meta.env.VITE_API_KEY),
+  } = options ?? {}
 
   const isCalculatingBrlTotal = ref<boolean>(false)
 
@@ -57,29 +67,23 @@ export function useTipCalculator(debounceMs: number = 750) {
     return total / numberOfPersons
   }
 
-  watchDebounced(
-    summary,
-    async () => {
-      isCalculatingBrlTotal.value = true
+  async function onSummaryUpdate(updatedSummary: SummarySchema) {
+    isCalculatingBrlTotal.value = true
 
-      const rate = await repository.getRate({
-        currency: 'BRL',
-        baseCurrency: formData.value.shouldUseUSD ? 'USD' : 'EUR',
-      })
+    const rate = await repository.getRate({
+      currency: 'BRL',
+      baseCurrency: formData.value.shouldUseUSD ? 'USD' : 'EUR',
+    })
 
-      if (!rate) {
-        isCalculatingBrlTotal.value = false
-        return
-      }
-
-      totalInBrl.value = rate
-
+    if (!rate) {
       isCalculatingBrlTotal.value = false
-    },
-    {
-      debounce: debounceMs,
-    },
-  )
+      return
+    }
+
+    totalInBrl.value = updatedSummary.total / rate
+
+    isCalculatingBrlTotal.value = false
+  }
 
   function reset() {
     formData.value = {
@@ -90,6 +94,10 @@ export function useTipCalculator(debounceMs: number = 750) {
     }
   }
 
+  watchDebounced(summary, onSummaryUpdate, {
+    debounce: debounceMs,
+  })
+
   return {
     isCalculatingBrlTotal,
     formData,
@@ -99,5 +107,6 @@ export function useTipCalculator(debounceMs: number = 750) {
     calculateTipAmount,
     calculateTotal,
     calculateAmountPerPerson,
+    onSummaryUpdate,
   }
 }

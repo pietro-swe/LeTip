@@ -67,6 +67,6 @@ describe('Currency Exchange Rate Repository Test Suite', () => {
       currency: QUOTE_CURRENCY,
     })
 
-    console.log(response)
+    expect(response).toBeNull()
   })
 })
