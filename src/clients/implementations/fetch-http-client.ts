@@ -14,7 +14,7 @@ export class FetchHttpClient implements IHttpClient {
   constructor(baseURL: string, options?: FetchHttpClientParams) {
     this.#baseURL = baseURL
     this.#timeoutMs = options?.timeoutMs ?? 15_000
-    this.#fetchFn = options?.fetcherFn ?? fetch
+    this.#fetchFn = options?.fetcherFn ?? window.fetch.bind(window)
   }
 
   async get<TOutput>({ endpoint, query, headers }: GetParams): Promise<TOutput> {
@@ -27,6 +27,7 @@ export class FetchHttpClient implements IHttpClient {
       const response = await this.#fetchFn(url, {
         headers,
         signal,
+        mode: 'no-cors',
       })
 
       if (!response.ok) {

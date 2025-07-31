@@ -12,6 +12,7 @@ export type TipFormSchema = {
 }
 
 export type SummarySchema = {
+  amount: number
   tipTotal: number
   total: number
   perPersonAmount: number
@@ -24,11 +25,14 @@ export type UseTipCalculatorOptions = {
 }
 
 export function useTipCalculator(options?: UseTipCalculatorOptions) {
-  const {
-    debounceMs = 750,
-    client = new FetchHttpClient(import.meta.env.VITE_API_BASE_URL),
-    repository = new CurrencyExchangeRateRepository(client, import.meta.env.VITE_API_KEY),
-  } = options ?? {}
+  const { debounceMs = 750, client = new FetchHttpClient(import.meta.env.VITE_API_BASE_URL) } =
+    options ?? {
+      debounceMs: 750,
+      client: new FetchHttpClient(import.meta.env.VITE_API_BASE_URL),
+    }
+
+  const repository =
+    options?.repository ?? new CurrencyExchangeRateRepository(client, import.meta.env.VITE_API_KEY)
 
   const isCalculatingBrlTotal = ref<boolean>(false)
 
@@ -47,6 +51,7 @@ export function useTipCalculator(options?: UseTipCalculatorOptions) {
     const perPersonAmount = calculateAmountPerPerson(total, formData.value.numberOfPeopleToSplit)
 
     return {
+      amount: formData.value.amount,
       total,
       tipTotal,
       perPersonAmount,
@@ -54,7 +59,7 @@ export function useTipCalculator(options?: UseTipCalculatorOptions) {
   })
 
   function calculateTipAmount(amount: number, tipPercentage: number): number {
-    return amount * (tipPercentage / 100)
+    return amount * tipPercentage
   }
 
   function calculateTotal(amount: number, tipTotal: number): number {

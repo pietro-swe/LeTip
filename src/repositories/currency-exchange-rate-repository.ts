@@ -34,9 +34,9 @@ export class CurrencyExchangeRateRepository {
       })
 
       return response.quote
-    } catch {
-      // I previously placed a console.log here but it could be a logging mechanism
-      // I then omitted the error from this catch block because it was too simple
+    } catch (e) {
+      // It could be a logging mechanism
+      console.log(e)
 
       return null
     }

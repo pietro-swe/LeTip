@@ -1,22 +1,12 @@
 <script setup lang="ts">
-  import CurrencyInput from './components/inputs/CurrencyInput.vue'
-  import RangeInput from './components/inputs/RangeInput.vue'
+  import CalculatorPanel from './components/ui/CalculatorPanel.vue'
+  import ResultPanel from './components/ui/ResultPanel.vue'
   import { useCurrencySymbol } from './composables/currency-symbol'
   import { useTipCalculator } from './composables/tip-calculator'
 
-  const { formData } = useTipCalculator()
+  const { formData, summary, totalInBrl } = useTipCalculator()
 
   const { currency, currencySymbol } = useCurrencySymbol(formData)
-
-  const percentFormatter = new Intl.NumberFormat('pt-BR', {
-    style: 'percent',
-    maximumFractionDigits: 0,
-  })
-
-  const unitFormatter = new Intl.NumberFormat('pt-BR', {
-    style: 'decimal',
-    maximumFractionDigits: 0,
-  })
 </script>
 
 <template>
@@ -26,29 +16,13 @@
     </header>
 
     <main class="app-container__content">
-      <CurrencyInput
-        v-model="formData.amount"
-        label="Valor"
-        :currency="currency"
-        :symbol="currencySymbol"
-      />
+      <CalculatorPanel v-model="formData" :currency :currency-symbol />
 
-      <RangeInput
-        v-model="formData.tipPercentage"
-        label="Gorjeta"
-        :formatter="percentFormatter"
-        :min="0.1"
-        :max="0.2"
-        :step="0.01"
-      />
-
-      <RangeInput
-        v-model="formData.numberOfPeopleToSplit"
-        label="Pessoas"
-        :formatter="unitFormatter"
-        :min="2"
-        :max="16"
-        :step="1"
+      <ResultPanel
+        :should-use-usd="formData.shouldUseUSD"
+        :summary
+        :total-in-brl
+        :currency-symbol
       />
     </main>
   </div>
@@ -59,17 +33,22 @@
     height: 100%;
     width: 100%;
 
-    display: grid;
-    grid-template-rows: repeat(2, minmax(0, 1fr));
-    justify-content: center;
-    align-content: center;
+    display: flex;
+    flex-direction: column;
+
+    gap: 2rem;
+
+    header {
+      width: 100%;
+      text-align: center;
+    }
 
     .app-container__content {
-      .app-container__content__form {
-      }
+      width: 100%;
 
-      .app-container__content__summary {
-      }
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
     }
   }
 </style>
