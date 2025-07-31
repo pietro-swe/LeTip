@@ -24,6 +24,22 @@
     )
   })
 
+  const shouldShowResults = computed(() => {
+    if (isOnDesktop.value) {
+      return true
+    }
+
+    return !isOnDesktop.value && showingResults.value
+  })
+
+  const shouldHideCalculator = computed(() => {
+    if (isOnDesktop.value) {
+      return false
+    }
+
+    return !isOnDesktop.value && showingResults.value
+  })
+
   function onClickChangePanel() {
     showingResults.value = !showingResults.value
   }
@@ -36,9 +52,15 @@
     </header>
 
     <main class="app-container__content">
-      <CalculatorPanel v-model="formData" :currency :currency-symbol />
+      <CalculatorPanel
+        v-show="!shouldHideCalculator"
+        v-model="formData"
+        :currency
+        :currency-symbol
+      />
 
       <ResultPanel
+        v-show="shouldShowResults"
         :should-use-usd="formData.shouldUseUSD"
         :summary
         :total-in-brl
@@ -67,6 +89,7 @@
     }
 
     .app-container__content {
+      height: 100%;
       width: 100%;
 
       display: flex;
