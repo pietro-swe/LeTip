@@ -10,6 +10,8 @@ To get an API Key, you shall create an account on [SWOP API](https://swop.cx/) a
 
 Setting up the API Key, you can proceed with the commands below:
 
+### Install dependencies
+
 ```sh
 npm install
 ```
