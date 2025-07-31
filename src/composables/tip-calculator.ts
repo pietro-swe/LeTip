@@ -25,12 +25,8 @@ export type UseTipCalculatorOptions = {
 }
 
 export function useTipCalculator(options?: UseTipCalculatorOptions) {
-  const { debounceMs = 750, client = new FetchHttpClient(import.meta.env.VITE_API_BASE_URL) } =
-    options ?? {
-      debounceMs: 750,
-      client: new FetchHttpClient(import.meta.env.VITE_API_BASE_URL),
-    }
-
+  const debounceMs = options?.debounceMs ?? 750
+  const client = options?.client ?? new FetchHttpClient(import.meta.env.VITE_API_BASE_URL)
   const repository =
     options?.repository ?? new CurrencyExchangeRateRepository(client, import.meta.env.VITE_API_KEY)
 
