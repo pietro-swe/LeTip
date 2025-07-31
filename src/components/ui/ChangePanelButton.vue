@@ -24,6 +24,7 @@
     <ChevronIcon
       class="icon"
       :class="{
+        base: !props.showingResults,
         flipped: props.showingResults,
       }"
     />
@@ -52,7 +53,31 @@
     }
   }
 
+  .base {
+    animation: animatedRotationReversed 0.5s ease forwards;
+  }
+
   .flipped {
-    transform: rotate(180deg);
+    animation: animatedRotation 0.5s ease forwards;
+  }
+
+  @keyframes animatedRotation {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  @keyframes animatedRotationReversed {
+    0% {
+      transform: rotate(180deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
   }
 </style>

@@ -51,6 +51,31 @@
 </template>
 
 <style scoped>
+  .app-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2rem;
+
+    header {
+      width: 100%;
+      text-align: center;
+    }
+
+    .app-container__content {
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+  }
+
   /* Laptop Small and beyond */
   @media (min-width: 1024px) {
     .app-container {
@@ -74,31 +99,6 @@
         flex-direction: row;
         justify-content: space-around;
       }
-    }
-  }
-
-  .app-container {
-    position: relative;
-    height: 100%;
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 2rem;
-
-    header {
-      width: 100%;
-      text-align: center;
-    }
-
-    .app-container__content {
-      width: 100%;
-
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: space-around;
     }
   }
 </style>
